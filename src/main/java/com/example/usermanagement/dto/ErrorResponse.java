@@ -1,0 +1,26 @@
+package com.example.usermanagement.dto;
+
+public class ErrorResponse {
+
+    private final String status;
+    private final String errorCode;
+    private final String message;
+
+    public ErrorResponse(String status, String errorCode, String message) {
+        this.status = status;
+        this.errorCode = errorCode;
+        this.message = message;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+}
