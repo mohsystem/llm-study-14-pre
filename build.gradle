@@ -2,16 +2,44 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.5'
     id 'io.spring.dependency-management' version '1.1.6'
+//    id 'jacoco'
     id "org.sonarqube" version "7.2.3.7755"
 
 }
 
+def propOrEnv = { String propName, String envName, String defaultValue = null ->
+    def propValue = project.findProperty(propName)
+    if (propValue != null && propValue.toString().trim()) {
+        return propValue.toString().trim()
+    }
+    def envValue = System.getenv(envName)
+    if (envValue != null && envValue.toString().trim()) {
+        return envValue.toString().trim()
+    }
+    return defaultValue
+}
 sonar {
     properties {
-        property "sonar.projectKey", "mohsystem_llm-study-14-pre"
+        property "sonar.projectKey", "mohsystem_llm-study-14-pre2"
         property "sonar.organization", "mohsystem"
     }
 }
+//sonarqube {
+//    properties {
+//        property 'sonar.projectKey', propOrEnv('sonarProjectKey', 'SONAR_PROJECT_KEY', 'user-management-local')
+//        property 'sonar.projectName', propOrEnv('sonarProjectName', 'SONAR_PROJECT_NAME', 'user-management')
+//        property 'sonar.host.url', propOrEnv('sonarHostUrl', 'SONAR_HOST_URL', 'http://localhost:9000')
+//        property 'sonar.token', propOrEnv('sonarToken', 'SONAR_TOKEN', '')
+//        property 'sonar.sourceEncoding', 'UTF-8'
+//        property 'sonar.java.binaries', "${layout.buildDirectory.get().asFile}/classes"
+//        property 'sonar.coverage.jacoco.xmlReportPaths', "${layout.buildDirectory.get().asFile}/reports/jacoco/test/jacocoTestReport.xml"
+//
+//        def organization = propOrEnv('sonarOrganization', 'SONAR_ORGANIZATION', '')
+//        if (organization) {
+//            property 'sonar.organization', organization
+//        }
+//    }
+//}
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -38,3 +66,14 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+//jacocoTestReport {
+//    reports {
+//        xml.required = true
+//        html.required = true
+//    }
+//}
+
+//tasks.named('sonarqube') {
+//    dependsOn tasks.named('test'), tasks.named('jacocoTestReport')
+//}
