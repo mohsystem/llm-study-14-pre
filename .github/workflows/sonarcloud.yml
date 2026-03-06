@@ -1,55 +1,31 @@
-name: SonarCloud analysis
+name: SonarCloud
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   pull_request:
-    branches: ["main"]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pull-requests: read
 
 jobs:
-  analysis:
-    name: SonarCloud Scan
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2️⃣ Setup Java (required for Gradle + Sonar)
-      - name: Setup Java
+      - name: Setup JDK
         uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: 17
-          distribution: zulu
 
-      # 3️⃣ Cache Sonar packages (faster runs)
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-
-      # 4️⃣ Fix gradlew permission
-      - name: Make Gradle wrapper executable
+      - name: Grant execute permission
         run: chmod +x gradlew
 
-      # 5️⃣ Build project
-      - name: Build project
-        run: ./gradlew build
-
-      # 6️⃣ SonarCloud analysis
-      - name: Analyze with SonarCloud
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          ./gradlew sonar \
-            -Dsonar.projectKey=mohsystem_llm-study-14-pre2 \
-            -Dsonar.organization=mohsystem
+        run: ./gradlew build sonar
